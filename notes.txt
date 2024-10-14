@@ -1,0 +1,31 @@
+r/popular does not next but you can get posts by doing getHot, getBest, getNew
+
+
+link,self/is_self (is there is text -> selfText),image,is_gallery, is_video, hosted:video (check media), 
+
+
+https://www.freecodecamp.org/news/infinite-scrolling-in-react/
+
+TO LEARN: 
+watch a video about transition and transforms
+
+
+TO DO: 
+
+responsiveness
+
+TO DO LATER:
+
+pages- upvoted, downvoted
+
+profile pop-up
+
+advanced search
+
+
+
+CONSIDER:
+useSwr - possible optimization
+https://swr.vercel.app/
+
+polls
