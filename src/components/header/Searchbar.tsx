@@ -14,7 +14,7 @@ const fetchSubreddits = async (
   query: string,
   snoowrap: Snoowrap | undefined,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  signal: AbortSignal
+  _signal: AbortSignal
 ): Promise<Subreddit[]> => {
   if (!snoowrap) {
     return [];
