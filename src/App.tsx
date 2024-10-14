@@ -7,6 +7,7 @@ import SideBar from '@/components/sidebar/Sidebar';
 import CommentsView from './components/comments/CommentsView';
 import Main from './components/feed/Main';
 import { Toaster } from '@/components/ui/toaster';
+import WelcomeDialog from './components/WelcomeDialog';
 
 function App() {
   const { setSnoowrap } = useSnoowrap();
@@ -56,6 +57,7 @@ function App() {
         <CommentsView />
       </div>
       <Toaster/>
+      <WelcomeDialog />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import Snoowrap from 'snoowrap';
 
 const USER_AGENT = 'Simplified Reddit reader for desktop';
-const REDIRECT_URI = 'http://127.0.0.1:5173/';
+const REDIRECT_URI = 'https://colby-chan26.github.io/simple-reddit/';
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 
 export const handleAuthorization = (): void => {
@@ -18,12 +18,18 @@ export const handleAuthorization = (): void => {
       'history',
     ],
     redirectUri: REDIRECT_URI,
-    permanent: true,
+    // permanent: true,
   });
   window.location.replace(authenticationUrl);
 };
 
 export const initializeSnoowrap = async (): Promise<Snoowrap | undefined> => {
+  
+  /*
+
+  //
+  --- For sample only: DO NOT STORE refresh token 
+
   const refreshToken = sessionStorage.getItem('refreshToken');
   if (refreshToken) {
     const r = new Snoowrap({
@@ -34,6 +40,7 @@ export const initializeSnoowrap = async (): Promise<Snoowrap | undefined> => {
     });
     return r;
   }
+  */
 
   const authCode = new URL(window.location.href).searchParams.get('code');
   if (authCode) {
@@ -44,7 +51,7 @@ export const initializeSnoowrap = async (): Promise<Snoowrap | undefined> => {
         userAgent: USER_AGENT,
         redirectUri: REDIRECT_URI,
       });
-      sessionStorage.setItem('refreshToken', r.refreshToken);
+      // sessionStorage.setItem('refreshToken', r.refreshToken);
       return r;
     } catch (e) {
       console.error(e);
