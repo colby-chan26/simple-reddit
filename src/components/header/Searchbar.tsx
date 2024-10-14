@@ -93,8 +93,7 @@ const Searchbar = () => {
   }, [query, debouncedSearch]);
 
   const onItemClick = useCallback(
-    (subreddit: Subreddit) => (e: React.MouseEvent<HTMLElement>) => {
-      e.preventDefault();
+    (subreddit: Subreddit) => () => {
       setViewContent({ subreddit });
       setIsDropdownVisible(false);
       setQuery('');
