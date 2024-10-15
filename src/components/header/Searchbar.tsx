@@ -43,6 +43,7 @@ const Searchbar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
@@ -92,6 +93,22 @@ const Searchbar = () => {
     };
   }, [query, debouncedSearch]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const onItemClick = useCallback(
     (subreddit: Subreddit) => () => {
       setViewContent({ subreddit });
@@ -106,68 +123,63 @@ const Searchbar = () => {
     setQuery(e.target.value);
   };
 
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget)) {
-      setIsDropdownVisible(false);
-    }
-  }, []);
-
   return (
-    <div className='relative w-full max-w-[600px] mx-auto' onBlur={handleBlur}>
-      <div className='relative'>
-        <Input
-          type='text'
-          placeholder='Find a Subreddit'
-          value={query}
-          onChange={handleInputChange}
-          onFocus={() => setIsDropdownVisible(query.length > 0)}
-          className='pr-10 rounded-full'
-          aria-label='Search'
-          aria-autocomplete='list'
-          aria-controls='search-dropdown'
-          aria-expanded={isDropdownVisible}
-        />
-        <Button
-          size='icon'
-          variant='ghost'
-          className='absolute right-0 top-0 h-full rounded-full'
-          aria-label='Search'
-        >
-          <Search className='h-4 w-4' />
-        </Button>
+    <>
+      <div className='relative w-full max-w-[600px] mx-auto z-20' ref={searchBarRef}>
+        <div className='relative'>
+          <Input
+            type='text'
+            placeholder='Find a Subreddit'
+            value={query}
+            onChange={handleInputChange}
+            onFocus={() => setIsDropdownVisible(query.length > 0)}
+            className='pr-10 rounded-full'
+            aria-label='Search'
+            aria-autocomplete='list'
+            aria-controls='search-dropdown'
+            aria-expanded={isDropdownVisible}
+          />
+          <Button
+            size='icon'
+            variant='ghost'
+            className='absolute right-0 top-0 h-full rounded-full'
+            aria-label='Search'
+          >
+            <Search className='h-4 w-4' />
+          </Button>
+        </div>
+        {isDropdownVisible && (
+          <div className='absolute z-20 mt-1 w-full bg-white border max-h-65 border-gray-200 rounded-lg'>
+            <ScrollArea id='search-dropdown' className='shadow-lg rounded-lg'>
+              {isLoading ? (
+                <p className='p-4 text-sm text-gray-500'>Loading...</p>
+              ) : subreddits.length > 0 ? (
+                <div className='h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 py-2 gap-1 max-h-65'>
+                  {subreddits.map((item, index) => (
+                    <SearchbarItem
+                      key={index}
+                      onClick={onItemClick(item)}
+                      subreddit={item}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className='italic p-4 text-sm text-gray-500'>
+                  No results found
+                </p>
+              )}
+              <ScrollBar orientation='vertical' />
+            </ScrollArea>
+          </div>
+        )}
       </div>
       {isDropdownVisible && (
-        <div className='absolute z-20 mt-1 w-full bg-white border max-h-65 border-gray-200 rounded-lg'>
-          <ScrollArea id='search-dropdown' className='shadow-lg rounded-lg'>
-            {isLoading ? (
-              <p className='p-4 text-sm text-gray-500'>Loading...</p>
-            ) : subreddits.length > 0 ? (
-              <div className='h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 py-2 gap-1 max-h-65'>
-                {subreddits.map((item, index) => (
-                  <SearchbarItem
-                    key={index}
-                    onClick={onItemClick(item)}
-                    subreddit={item}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className='italic p-4 text-sm text-gray-500'>
-                No results found
-              </p>
-            )}
-            <ScrollBar orientation='vertical' />
-          </ScrollArea>
-        </div>
-      )}
-
-      {isDropdownVisible && (
-        <div
-          className='fixed inset-0 bg-opacity-50 z-10'
-          aria-hidden='true'
-        />
-      )}
-    </div>
+          <div
+            className='fixed inset-0 bg-opacity-50 z-10'
+            aria-hidden='true'
+          />
+        )}
+    </>
   );
 };
 
