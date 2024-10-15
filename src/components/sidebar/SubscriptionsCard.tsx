@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSnoowrap } from '@/components/providers/SnoowrapProvider';
 import { Subreddit } from 'snoowrap';
 import InfiniteScrollArea from '../InfiniteScrollArea';
+import { addToRecent } from '../recents';
 
 const SubscriptionsCard = () => {
   const { snoowrap } = useSnoowrap();
@@ -52,7 +53,10 @@ const SubscriptionsCard = () => {
           key={subscription.display_name_prefixed + 'subscriptionItem'}
           variant='ghost'
           className='w-full justify-start p-0'
-          onClick={() => setViewContent({ subreddit: subscription })}
+          onClick={() => {
+            setViewContent({ subreddit: subscription });
+            addToRecent(subscription);
+          }}
         >
           <div className='flex flex-row items-center gap-1'>
             <Avatar>
